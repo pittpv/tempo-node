@@ -63,6 +63,7 @@ init_languages() {
   TRANSLATIONS["en,creating_dirs"]="Creating data and key directories..."
   TRANSLATIONS["en,generating_key"]="Generating consensus signing key..."
   TRANSLATIONS["en,key_exists"]="Signing key already exists, skipping."
+  TRANSLATIONS["en,creating_public_key"]="Creating public key from private key..."
   TRANSLATIONS["en,downloading_snapshot"]="Downloading chain snapshot (this may take a while)..."
   TRANSLATIONS["en,snapshot_retry"]="Snapshot download failed (attempt %s/%s). Retrying in 15s..."
   TRANSLATIONS["en,snapshot_failed"]="Snapshot download failed after %s attempts. Check your network and try again."
@@ -230,6 +231,7 @@ init_languages() {
   TRANSLATIONS["ru,creating_dirs"]="Создание каталогов данных и ключей..."
   TRANSLATIONS["ru,generating_key"]="Генерация ключа консенсуса..."
   TRANSLATIONS["ru,key_exists"]="Ключ подписи уже есть, пропуск."
+  TRANSLATIONS["ru,creating_public_key"]="Создание публичного ключа из приватного..."
   TRANSLATIONS["ru,downloading_snapshot"]="Загрузка снепшота цепи (может занять время)..."
   TRANSLATIONS["ru,snapshot_retry"]="Ошибка загрузки снапшота (попытка %s/%s). Повтор через 15 с..."
   TRANSLATIONS["ru,snapshot_failed"]="Загрузка снапшота не удалась после %s попыток. Проверьте сеть и запустите снова."
@@ -397,6 +399,7 @@ init_languages() {
   TRANSLATIONS["tr,creating_dirs"]="Veri ve anahtar dizinleri oluşturuluyor..."
   TRANSLATIONS["tr,generating_key"]="Consensus imza anahtarı oluşturuluyor..."
   TRANSLATIONS["tr,key_exists"]="İmza anahtarı zaten var, atlanıyor."
+  TRANSLATIONS["tr,creating_public_key"]="Özel anahtardan genel anahtar oluşturuluyor..."
   TRANSLATIONS["tr,downloading_snapshot"]="Zincir anlık görüntüsü indiriliyor (zaman alabilir)..."
   TRANSLATIONS["tr,snapshot_retry"]="Snapshot indirme başarısız (deneme %s/%s). 15 saniye sonra tekrar deneniyor..."
   TRANSLATIONS["tr,snapshot_failed"]="%s denemeden sonra snapshot indirme başarısız. Ağ bağlantınızı kontrol edip tekrar deneyin."
@@ -1591,6 +1594,11 @@ install_tempo_validator() {
     docker run --rm -v "$KEYDIR:/keys" "$image_to_use" consensus generate-private-key --output /keys/signing.key
   else
     warn "$(t "key_exists")"
+  fi
+
+  if [[ -f "$KEYDIR/signing.key" && ! -f "$KEYDIR/signing.pub" ]]; then
+    info "$(t "creating_public_key")"
+    docker run --rm -v "$KEYDIR:/keys" "$image_to_use" consensus calculate-public-key --private-key /keys/signing.key > "$KEYDIR/signing.pub"
   fi
 
   info "$(t "creating_compose")"
