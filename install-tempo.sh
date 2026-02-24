@@ -50,6 +50,7 @@ init_languages() {
   TRANSLATIONS["en,choose_option"]="Select option:"
   TRANSLATIONS["en,invalid_choice"]="Invalid choice. Try again."
   TRANSLATIONS["en,goodbye"]="Goodbye."
+  TRANSLATIONS["en,welcome"]="Welcome to Tempo Node Installer"
   TRANSLATIONS["en,checking_docker"]="Checking Docker..."
   TRANSLATIONS["en,docker_not_found"]="Docker not installed."
   TRANSLATIONS["en,docker_required"]="Docker is required. Exiting."
@@ -216,6 +217,7 @@ init_languages() {
   TRANSLATIONS["ru,choose_option"]="Введите пункт меню:"
   TRANSLATIONS["ru,invalid_choice"]="Неверный выбор."
   TRANSLATIONS["ru,goodbye"]="До свидания."
+  TRANSLATIONS["ru,welcome"]="Добро пожаловать в установщик ноды Tempo"
   TRANSLATIONS["ru,checking_docker"]="Проверка Docker..."
   TRANSLATIONS["ru,docker_not_found"]="Docker не установлен."
   TRANSLATIONS["ru,docker_required"]="Требуется Docker. Выход."
@@ -382,6 +384,7 @@ init_languages() {
   TRANSLATIONS["tr,choose_option"]="Seçin:"
   TRANSLATIONS["tr,invalid_choice"]="Geçersiz seçim."
   TRANSLATIONS["tr,goodbye"]="Hoşça kalın."
+  TRANSLATIONS["tr,welcome"]="Tempo Node Kurulum programına hoş geldiniz"
   TRANSLATIONS["tr,checking_docker"]="Docker kontrol ediliyor..."
   TRANSLATIONS["tr,docker_not_found"]="Docker yüklü değil."
   TRANSLATIONS["tr,docker_required"]="Docker gerekli. Çıkılıyor."
@@ -544,6 +547,57 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 BLUE='\033[0;34m'
 NC='\033[0m'
+
+# Show logo and info frame (by example of aztec-logs.sh)
+show_logo() {
+  local b=$'\033[34m' # Blue
+  local y=$'\033[33m' # Yellow
+  local r=$'\033[0m'  # Reset
+
+  echo
+  echo
+  echo -e "${NC}$(t "welcome")${NC}"
+  echo
+  echo "${b}$(echo "  ████████╗███████╗███╗   ███╗██████╗  ██████╗ " | sed -E "s/(█+)/${y}\1${b}/g")${r}"
+  echo "${b}$(echo "  ╚══██╔══╝██╔════╝████╗ ████║██╔══██╗██╔═══██╗" | sed -E "s/(█+)/${y}\1${b}/g")${r}"
+  echo "${b}$(echo "     ██║   █████╗  ██╔████╔██║██████╔╝██║   ██║" | sed -E "s/(█+)/${y}\1${b}/g")${r}"
+  echo "${b}$(echo "     ██║   ██╔══╝  ██║╚██╔╝██║██╔═══╝ ██║   ██║" | sed -E "s/(█+)/${y}\1${b}/g")${r}"
+  echo "${b}$(echo "     ██║   ███████╗██║ ╚═╝ ██║██║     ╚██████╔╝" | sed -E "s/(█+)/${y}\1${b}/g")${r}"
+  echo "${b}$(echo "     ╚═╝   ╚══════╝╚═╝     ╚═╝╚═╝      ╚═════╝ " | sed -E "s/(█+)/${y}\1${b}/g")${r}"
+  echo
+
+  # Information in frame
+  local info_lines=(
+    " Made by Pittpv"
+    " Feedback & Support in Tg: https://t.me/+DLsyG6ol3SFjM2Vk"
+    " Donate"
+    "  EVM: 0x4FD5eC033BA33507E2dbFE57ca3ce0A6D70b48Bf"
+    "  SOL: C9TV7Q4N77LrKJx4njpdttxmgpJ9HGFmQAn7GyDebH4R"
+  )
+
+  # Calculate maximum line length (accounting for Unicode, without colors)
+  local max_len=0
+  for line in "${info_lines[@]}"; do
+    local clean_line=$(echo "$line" | sed -E 's/\x1B\[[0-9;]*[mK]//g')
+    local line_length=$(echo -n "$clean_line" | wc -m)
+    (( line_length > max_len )) && max_len=$line_length
+  done
+
+  # Frames
+  local top_border="╔$(printf '═%.0s' $(seq 1 $((max_len + 2))))╗"
+  local bottom_border="╚$(printf '═%.0s' $(seq 1 $((max_len + 2))))╝"
+
+  # Print frame
+  echo -e "${b}${top_border}${r}"
+  for line in "${info_lines[@]}"; do
+    local clean_line=$(echo "$line" | sed -E 's/\x1B\[[0-9;]*[mK]//g')
+    local line_length=$(echo -n "$clean_line" | wc -m)
+    local padding=$((max_len - line_length))
+    printf "${b}║ ${y}%s%*s ${b}║\n" "$line" "$padding" ""
+  done
+  echo -e "${b}${bottom_border}${r}"
+  echo
+}
 
 # Helper functions for colored output
 info() {
@@ -2146,6 +2200,7 @@ check_for_updates() {
 }
 
 main_menu() {
+  show_logo
   while true; do
     echo -e "\n${BLUE}$(t "title")${NC}"
     echo -e "${GREEN}$(t "option1")${NC}"
@@ -2186,6 +2241,8 @@ main_menu() {
         echo ""
         echo -e "${YELLOW}Press Enter to continue...${NC}"
         read -r
+        clear
+        show_logo
       fi
     fi
   done
