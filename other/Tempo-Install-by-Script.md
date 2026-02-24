@@ -132,7 +132,7 @@ cd $HOME && ./install-tempo.sh
 
 1. Выберите в меню **2** (Install Tempo Validator Node).
 2. Скрипт запрашивает **FEE_RECIPIENT** — EVM-адрес (с префиксом 0x), на который будут начисляться награды. Проверяются порты валидатора: HTTP, WebSocket, P2P, Consensus (8000), metrics. При занятых портах задайте в `.env-tempo` переменные `VALIDATOR_HTTP_PORT`, `VALIDATOR_P2P_PORT`, `VALIDATOR_CONSENSUS_PORT` и т.д. и повторите запуск.
-3. Создаётся каталог `$TEMPO_HOME/validator`, в нём — `data` и `keys`. Если файла `keys/signing.key` нет, скрипт **генерирует** ключ подписи консенсуса (команда `consensus generate-private-key`).
+3. Создаётся каталог `$TEMPO_HOME/validator`, в нём — `data` и `keys`. Если файла `keys/signing.key` нет, скрипт **генерирует** ключ подписи консенсуса (команда `consensus generate-private-key`) и по нему создаёт публичный ключ `keys/signing.pub` (команда `consensus calculate-public-key`). Если приватный ключ уже есть, а `signing.pub` отсутствует, скрипт создаёт публичный ключ отдельно.
 4. Создаётся `docker-compose.yml` с контейнером `tempo-validator`, монтируются данные и ключи; создаётся `.env-tempo` в `$TEMPO_HOME`, если его ещё нет.
 5. Рекомендуется перед первым полноценным запуском в **screen/tmux** выполнить **опцию 3** (Снапшот) для выбранной ноды, чтобы ускорить синхронизацию.
 

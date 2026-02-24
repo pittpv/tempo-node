@@ -130,7 +130,7 @@ After installation, RPC is available at e.g. `http://0.0.0.0:8545` (or the ports
 
 1. Choose **2** (Install Tempo Validator Node) in the menu.
 2. The script asks for **FEE_RECIPIENT** — EVM address (with 0x) for rewards. It then checks validator ports: HTTP, WebSocket, P2P, Consensus (8000), metrics. If any are in use, set `VALIDATOR_HTTP_PORT`, `VALIDATOR_P2P_PORT`, `VALIDATOR_CONSENSUS_PORT`, etc. in `.env-tempo` and run again.
-3. It creates `$TEMPO_HOME/validator` with `data` and `keys`. If `keys/signing.key` does not exist, the script **generates** the consensus signing key (`consensus generate-private-key`).
+3. It creates `$TEMPO_HOME/validator` with `data` and `keys`. If `keys/signing.key` does not exist, the script **generates** the consensus signing key (`consensus generate-private-key`) and then creates the public key `keys/signing.pub` from it (`consensus calculate-public-key`). If the private key already exists but `signing.pub` is missing, the script creates the public key as well.
 4. It creates `docker-compose.yml` for the `tempo-validator` container, mounts data and keys, and creates `.env-tempo` in `$TEMPO_HOME` if missing.
 5. Running **option 3** (Snapshot) in **screen/tmux** before the first full run is recommended to speed up sync.
 

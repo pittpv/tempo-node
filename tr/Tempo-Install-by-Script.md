@@ -130,7 +130,7 @@ Kurulumdan sonra RPC örneğin `http://0.0.0.0:8545` (veya .env-tempo’daki por
 
 1. Menüde **2** (Install Tempo Validator Node) seçin.
 2. Script **FEE_RECIPIENT** ister — ödüller için EVM adresi (0x ile). Ardından validator portlarını kontrol eder: HTTP, WebSocket, P2P, Consensus (8000), metrics. Port meşgulse `.env-tempo` içinde `VALIDATOR_HTTP_PORT`, `VALIDATOR_P2P_PORT`, `VALIDATOR_CONSENSUS_PORT` vb. ayarlayıp tekrar çalıştırın.
-3. `$TEMPO_HOME/validator` oluşturulur; içinde `data` ve `keys` vardır. `keys/signing.key` yoksa script konsensüs imza anahtarını **üretir** (`consensus generate-private-key`).
+3. `$TEMPO_HOME/validator` oluşturulur; içinde `data` ve `keys` vardır. `keys/signing.key` yoksa script konsensüs imza anahtarını **üretir** (`consensus generate-private-key`) ve buna göre genel anahtarı `keys/signing.pub` oluşturur (`consensus calculate-public-key`). Özel anahtar varsa ama `signing.pub` yoksa script genel anahtarı ayrıca oluşturur.
 4. `tempo-validator` konteyneri için `docker-compose.yml` yazılır, data ve keys mount edilir; gerekirse `$TEMPO_HOME` içinde `.env-tempo` oluşturulur.
 5. İlk tam çalıştırmadan önce **screen/tmux** içinde **3** (Snapshot) çalıştırmanız önerilir.
 
