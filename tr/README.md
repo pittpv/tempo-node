@@ -10,7 +10,7 @@
 
 ## Açıklama
 
-Bu script Tempo (Moderato) node'larını kurar ve yönetir: Docker'da RPC node ve Validator node. Sıfırdan kurulum, snapshot indirme ve açma, sürüm düşürme, senkronizasyon ve blok kontrolü, log görüntüleme ve uzun süren işlemler bittiğinde isteğe bağlı Telegram bildirimleri desteklenir.
+Bu script Tempo (moderato, mainnet) node'larını kurar ve yönetir: Docker'da RPC node ve Validator node. Sıfırdan kurulum, snapshot indirme ve açma, sürüm düşürme, senkronizasyon ve blok kontrolü, log görüntüleme ve uzun süren işlemler bittiğinde isteğe bağlı Telegram bildirimleri desteklenir.
 
 ## Özellikler
 

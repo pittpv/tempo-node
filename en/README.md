@@ -10,7 +10,7 @@
 
 ## Description
 
-This script installs and manages Tempo (Moderato) nodes: RPC node and Validator node in Docker. It supports fresh installs, snapshot download and extraction, version downgrade, sync and block checks, log viewing, and optional Telegram notifications when long-running tasks finish.
+This script installs and manages Tempo (moderato, mainnet) nodes: RPC node and Validator node in Docker. It supports fresh installs, snapshot download and extraction, version downgrade, sync and block checks, log viewing, and optional Telegram notifications when long-running tasks finish.
 
 ## Features
 
