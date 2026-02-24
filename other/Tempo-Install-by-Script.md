@@ -37,7 +37,7 @@ cd /path/to/tempo-node
 Чтобы получать уведомление о **завершении** выполнения опции 3 (Снапшот) или опции 4 (Даунгрейд), добавьте в файл **.env-tempo** переменные:
 
 - **TG_BOT_TOKEN** — токен бота, созданного через [@BotFather](https://t.me/BotFather).
-- **TG_CHAT_ID** — ID чата (узнать можно, например, через [@userinfobot](https://t.me/userinfobot) или getUpdates после отправки боту сообщения).
+- **TG_CHAT_ID** — ID чата (узнать можно, например, через [@myidbot](https://t.me/myidbot).
 
 Пример в `.env-tempo`:
 

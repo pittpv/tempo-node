@@ -35,7 +35,7 @@ tmux new -s tempo
 **3 (Snapshot)** veya **4 (Downgrade)** seçeneği **tamamlandığında** bildirim almak için **.env-tempo** dosyasına (script dizininde veya `$TEMPO_HOME` içinde) ekleyin:
 
 - **TG_BOT_TOKEN** — [@BotFather](https://t.me/BotFather) ile oluşturduğunuz botun token'ı.
-- **TG_CHAT_ID** — Chat ID (örn. [@userinfobot](https://t.me/userinfobot) veya bota mesaj gönderdikten sonra getUpdates ile öğrenilebilir).
+- **TG_CHAT_ID** — Chat ID (örn. [@myidbot](https://t.me/myidbot).
 
 Script, node kurduğunuzda (1 veya 2 numaralı seçenek) `$TEMPO_HOME` içinde **.env-tempo** dosyasını **kendisi oluşturur**. **Kurulumdan sonra** bu dosyayı düzenleyerek `TG_BOT_TOKEN` ve `TG_CHAT_ID` ekleyebilir veya portları / `TEMPO_HOME` değiştirebilirsiniz.
 

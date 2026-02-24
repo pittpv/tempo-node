@@ -35,7 +35,7 @@ tmux new -s tempo
 To get a notification when **option 3 (Snapshot)** or **option 4 (Downgrade)** finishes, add to your **.env-tempo** file (in the script directory or in `$TEMPO_HOME`):
 
 - **TG_BOT_TOKEN** — token from a bot created via [@BotFather](https://t.me/BotFather).
-- **TG_CHAT_ID** — your chat ID (e.g. from [@userinfobot](https://t.me/userinfobot) or getUpdates after sending a message to the bot).
+- **TG_CHAT_ID** — your chat ID (e.g. from [@myidbot](https://t.me/myidbot).
 
 The script **creates** `.env-tempo` in `$TEMPO_HOME` when you install a node (option 1 or 2). **Edit that file after installation** to add `TG_BOT_TOKEN` and `TG_CHAT_ID`, or to change ports / `TEMPO_HOME`.
 
