@@ -1,8 +1,8 @@
 # Tempo — Node kurulum ve yönetim scripti (RPC ve Validator)
 
 **Diğer diller:**
-- [🇷🇺 Rusça (ana)](../README.md)
-- [🌐 İngilizce](../en/README.md)
+- [🇷🇺 Rusça](../ru/README.md)
+- [🌐 İngilizce](../README.md)
 
 ![Bash](https://img.shields.io/badge/Bash-4+-blue)
 ![Docker](https://img.shields.io/badge/Docker-20.10+-blue)
@@ -84,7 +84,7 @@ tmux new -s tempo
 
 ## Adım adım rehber
 
-Kurulum ve Telegram ayarları: [**Tempo-Install-by-Script.md**](Tempo-Install-by-Script.md) (Türkçe). [Русский](../other/Tempo-Install-by-Script.md) · [English](../en/Tempo-Install-by-Script.md).
+Kurulum ve Telegram ayarları: [**Tempo-Install-by-Script.md**](Tempo-Install-by-Script.md) (Türkçe). [Русский](../ru/Tempo-Install-by-Script.md) · [English](../en/Tempo-Install-by-Script.md).
 
 ## Önemli
 

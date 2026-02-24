@@ -1,111 +1,106 @@
-# Tempo — скрипт установки и управления нодой (RPC и Validator)
+# Tempo — Node installation and management script (RPC and Validator)
 
-**Описание на:**
-- [🌐 English Version](en/README.md)
-- [🇹🇷 Turkish Version](tr/README.md)
+**Also in:**
+- [🇷🇺 Russian](ru/README.md)
+- [🇹🇷 Turkish](tr/README.md)
 
 ![Bash](https://img.shields.io/badge/Bash-4+-blue)
 ![Docker](https://img.shields.io/badge/Docker-20.10+-blue)
 ![Telegram](https://img.shields.io/badge/Telegram-API-blue)
 
-## 📝 Описание
+## Description
 
-Скрипт предназначен для установки и управления нодами Tempo (moderato, mainnet): RPC-нода и Validator-нода в Docker. Поддерживаются установка с нуля, загрузка и распаковка снапшота, даунгрейд версии, проверка синхронизации, просмотр логов и уведомления в Telegram о завершении длительных операций.
+This script installs and manages Tempo (moderato, mainnet) nodes: RPC node and Validator node in Docker. It supports fresh installs, snapshot download and extraction, version downgrade, sync and block checks, log viewing, and optional Telegram notifications when long-running tasks finish.
 
-## 🌟 Основные возможности
+## Features
 
-- 🐳 Установка Tempo RPC Node и Validator Node (Docker)
-- 📦 Снапшот: выбор версии, загрузка, распаковка, перезапуск ноды
-- ⬇️ Даунгрейд версии ноды
-- 🔍 Проверка синхронизации и блоков (RPC)
-- 📋 Просмотр логов ноды
-- 🛑 Запуск и остановка контейнеров с отображением статуса (работает / остановлен)
-- 📨 Опциональные уведомления в Telegram о завершении снапшота и даунгрейда
-- 🌐 Языки: английский, русский, турецкий
+- 🐳 Install Tempo RPC Node and Validator Node (Docker)
+- 📦 Snapshot: choose version, download, extract, restart node
+- ⬇️ Downgrade node version
+- 🔍 Check sync and blocks (RPC)
+- 📋 View node logs
+- 🛑 Start/stop containers with status (running / stopped)
+- 📨 Optional Telegram notifications when snapshot or downgrade complete
+- 🌐 Languages: English, Russian, Turkish
 
-## 🛠️ Функционал
+## Functionality
 
-| Функция | Описание |
-|--------|----------|
-| **RPC / Validator** | Установка в `$TEMPO_HOME/rpc` и `$TEMPO_HOME/validator` |
-| **Снапшот** | Список с API, выбор по номеру, ввод URL или локальный .tar.lz4 |
-| **Даунгрейд** | Выбор версии из списка или ввод тега, перезапуск ноды |
-| **Telegram** | TG_BOT_TOKEN и TG_CHAT_ID в .env — уведомления о завершении опций 3 и 4 |
-| **Языки** | EN / RU / TR в меню скрипта |
+| Feature | Description |
+|--------|-------------|
+| **RPC / Validator** | Install to `$TEMPO_HOME/rpc` and `$TEMPO_HOME/validator` |
+| **Snapshot** | List from API, choose by number, enter URL, or local .tar.lz4 |
+| **Downgrade** | Pick version from list or enter tag, restart node |
+| **Telegram** | Set TG_BOT_TOKEN and TG_CHAT_ID in .env for notifications after options 3 and 4 |
+| **Languages** | EN / RU / TR in script menu |
 
-## ⚙️ Установка и запуск
+## Installation and run
 
-1. **Требования:** Docker и Docker Compose. Скрипт проверит наличие и при необходимости подскажет установку.
+1. **Requirements:** Docker and Docker Compose. The script will check and prompt if needed.
 
-2. **Запуск** — однострочная команда (скачать с GitHub, назначить права, запустить):
+2. **Run** — one-line command (download from GitHub, chmod, run):
    ```bash
    curl -o install-tempo.sh https://raw.githubusercontent.com/pittpv/tempo-node/main/install-tempo.sh && chmod +x install-tempo.sh && ./install-tempo.sh
    ```
-   Для последующих запусков:
+   For subsequent runs:
    ```bash
    cd $HOME && ./install-tempo.sh
    ```
 
-3. **Конфигурация:** При установке ноды (опция 1 или 2) скрипт **создаёт** файл `.env-tempo` в `$TEMPO_HOME`. **После установки отредактируйте** этот файл при необходимости:
-   - `TEMPO_HOME` (по умолчанию `$HOME/tempo`), порты (RPC_HTTP_PORT, RPC_P2P_PORT и т.д.)
-   - для уведомлений о завершении снапшота и даунгрейда: **TG_BOT_TOKEN** и **TG_CHAT_ID**
+3. **Configuration:** When you install a node (option 1 or 2), the script **creates** `.env-tempo` in `$TEMPO_HOME`. **Edit that file after installation** if you need to set TEMPO_HOME, ports (RPC_HTTP_PORT, RPC_P2P_PORT, etc.), or **TG_BOT_TOKEN** and **TG_CHAT_ID** for completion notifications.
 
-## ⚠️ Обязательная рекомендация: screen / tmux для снапшота и даунгрейда
+## Mandatory: use screen or tmux for snapshot and downgrade
 
-**Перед выполнением опции 3 (Снапшот) или опции 4 (Даунгрейд)** запускайте скрипт в сессии **screen** или **tmux**. Загрузка и распаковка снапшота занимают много времени; при обрыве SSH процесс прервётся. В остальных случаях использование screen/tmux не обязательно.
+**Before running option 3 (Snapshot) or option 4 (Downgrade)**, run the script inside a **screen** or **tmux** session. Downloading and extracting a snapshot takes a long time; if SSH drops, the process will stop. For other options, screen/tmux is not required.
 
-Пример:
+Example:
 ```bash
 screen -S tempo
 ./install-tempo.sh
-# выберите 3 или 4; после завершения получите уведомление в Telegram при настроенных TG_BOT_TOKEN и TG_CHAT_ID
+# choose 3 or 4; when done you get a Telegram notification if TG_BOT_TOKEN and TG_CHAT_ID are set
 ```
 
-или:
+or:
 ```bash
 tmux new -s tempo
 ./install-tempo.sh
 ```
 
-## 🖥️ Главное меню
+## Main menu
 
-1. Установить Tempo RPC Node (Docker)
-2. Установить Tempo Validator Node (Docker)
-3. Снапшот: загрузка / выбор версии и перезапуск ноды
-4. Понизить версию ноды
-5. Версия ноды
-6. Просмотр логов ноды
-7. Удалить ноду
-8. Проверить обновления (скрипта)
-9. Остановить контейнер
-10. Запустить контейнер
-11. Проверка синхронизации и блоков
-12. Проверить место на диске
+1. Install Tempo RPC Node (Docker)
+2. Install Tempo Validator Node (Docker)
+3. Snapshot: download / choose version and restart node
+4. Downgrade node version
+5. Node version
+6. View node logs
+7. Remove node
+8. Check for updates (script)
+9. Stop container
+10. Start container
+11. Check sync and blocks
+12. Check disk usage
 
-`0.` Выход
+`0.` Exit
 
-## 📚 Пошаговая установка
+## Step-by-step guide
 
-Подробное пошаговое описание установки RPC/Validator, снапшота и настройки Telegram:
+Detailed installation and Telegram setup: [**Tempo-Install-by-Script.md**](en/Tempo-Install-by-Script.md) (English). [Russian](ru/Tempo-Install-by-Script.md) · [Türkçe](tr/Tempo-Install-by-Script.md).
 
-- [**Tempo-Install-by-Script.md**](other/Tempo-Install-by-Script.md) (рус.)
-- [English](en/Tempo-Install-by-Script.md) · [Türkçe](tr/Tempo-Install-by-Script.md)
+## Disclaimer
 
-## ⚠️ Важно
+This script is not an official Tempo product and is provided as is.
 
-Скрипт не является официальным продуктом Tempo и предоставляется «как есть».
+## Feedback
 
-## ✍️ Обратная связь
-
-Вопросы по работе скрипта, сообщения об ошибках или отзывы:
+Questions about the script, bug reports, or feedback:
 
 https://t.me/+DLsyG6ol3SFjM2Vk
 
-## 📜 Лицензия
+## License
 
 MIT License
 
-## 🔗 Полезные ссылки
+## Links
 
 - [Tempo Docs — RPC Node](https://docs.tempo.xyz/guide/node/rpc)
 - [Tempo Docs — Validator Node](https://docs.tempo.xyz/guide/node/validator)
