@@ -902,7 +902,8 @@ ensure_env_tempo_template() {
   else
     cat > "$env_tempo" <<'ENVTEMPO'
 # Tempo Node Installer — config (copy to .env-tempo and edit)
-# Load order: ./install-tempo.sh loads SCRIPT_DIR/.env-tempo then TEMPO_HOME/.env-tempo
+# RPC in TEMPO_HOME/rpc, Validator in TEMPO_HOME/validator.
+# Ports: https://docs.tempo.xyz/guide/node/system-requirements#ports
 
 # --- Network / node ---
 # Chain: moderato (testnet) or mainnet
@@ -913,13 +914,25 @@ CHAIN=moderato
 # DATADIR=
 # KEYDIR=
 
-# --- Ports (https://docs.tempo.xyz/guide/node/system-requirements#ports) ---
-# 30303 Execution P2P, 8000 Consensus P2P, 8545 HTTP RPC, 8546 WebSocket RPC, 9000 Metrics
+# --- Ports (Tempo docs) ---
 # Override when running RPC and Validator on one machine (e.g. VALIDATOR_HTTP_PORT=8547).
 HTTP_ADDR=0.0.0.0
 DISCOVERY_ADDR=0.0.0.0
-# RPC: RPC_HTTP_PORT=8545 RPC_WS_PORT=8546 RPC_P2P_PORT=30303 RPC_METRICS_PORT=9000
-# Validator: VALIDATOR_HTTP_PORT=8545 VALIDATOR_WS_PORT=8546 VALIDATOR_P2P_PORT=30303 VALIDATOR_CONSENSUS_PORT=8000 VALIDATOR_METRICS_PORT=9000
+
+# RPC node (defaults: 8545, 8546, 30303, 9000)
+RPC_HTTP_PORT=8545
+RPC_WS_PORT=8546
+RPC_P2P_PORT=30303
+RPC_DISCOVERY_PORT=30303
+RPC_METRICS_PORT=9000
+
+# Validator node (defaults: 8545, 8546, 30303, 8000, 9000)
+VALIDATOR_HTTP_PORT=8545
+VALIDATOR_WS_PORT=8546
+VALIDATOR_P2P_PORT=30303
+VALIDATOR_CONSENSUS_PORT=8000
+VALIDATOR_DISCOVERY_PORT=30303
+VALIDATOR_METRICS_PORT=9000
 
 # --- Docker ---
 # Default image tag
