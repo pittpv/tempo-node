@@ -68,9 +68,9 @@ cd $HOME && ./install-tempo.sh
 
 ---
 
-## .env-tempo dosyası: yükleme sırası ve değişkenler
+## .env-tempo dosyası ve değişkenler
 
-Script yapılandırmayı şu sırayla yükler: önce `SCRIPT_DIR/.env-tempo` (script dizini), sonra `$TEMPO_HOME/.env-tempo` (ikinci dosyadaki değerler birincileri geçersiz kılar). Node kurduğunuzda (1 veya 2 numaralı seçenek) script, yoksa `$TEMPO_HOME` içinde **.env-tempo** **oluşturur** (.env.example'dan). **Kurulumdan sonra** gerekirse bu dosyayı düzenleyin.
+Node kurduğunuzda (1 veya 2 numaralı seçenek) script, yoksa `$TEMPO_HOME` içinde **.env-tempo** **oluşturur** (.env.example'dan). **Kurulumdan sonra** gerekirse bu dosyayı düzenleyin.
 
 **Ortak değişkenler** (her iki node için):
 - `CHAIN` — ağ: `moderato` (testnet) veya `mainnet`

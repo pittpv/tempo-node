@@ -68,9 +68,9 @@ cd $HOME && ./install-tempo.sh
 
 ---
 
-## The .env-tempo file: load order and variables
+## The .env-tempo file and variables
 
-The script loads config in this order: first `SCRIPT_DIR/.env-tempo` (script directory), then `$TEMPO_HOME/.env-tempo` (values in the second file override the first). When you install a node (option 1 or 2), the script **creates** `.env-tempo` in `$TEMPO_HOME` if it does not exist (from `.env.example`). **After installation**, edit that file as needed.
+When you install a node (option 1 or 2), the script **creates** `.env-tempo` in `$TEMPO_HOME` if it does not exist (from `.env.example`). **After installation**, edit that file as needed.
 
 **Common variables** (any node):
 - `CHAIN` — network: `moderato` (testnet) or `mainnet`
