@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# Tempo Node Installer вЂ” Moderato (Testnet)
-# Docker image ghcr.io/tempoxyz/tempo:1.1.4
+# Tempo Node Installer Moderato (Testnet)
+# Docker image ghcr.io/tempoxyz/tempo:1.3.1
 # RPC: https://docs.tempo.xyz/guide/node/rpc | Validator: https://docs.tempo.xyz/guide/node/validator
 # Snapshots: https://docs.tempo.xyz/guide/node/rpc#manually-downloading-snapshots
-# Guide: https://github.com/mztacat/Setting-up-Tempo-Node
+# Guide: https://github.com/pittpv/tempo-node/blob/main/en/Tempo-Install-by-Script.md
 #
 # NOTE: if you make modifications to this script, please increment the version number.
 # WARNING: the SemVer pattern: major.minor.patch must be followed as we use it to determine if the script is up to date.
