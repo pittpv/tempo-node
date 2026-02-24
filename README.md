@@ -1,0 +1,112 @@
+# Tempo — скрипт установки и управления нодой (RPC и Validator)
+
+**Описание на:**
+- [🌐 English Version](en/README.md)
+- [🇹🇷 Turkish Version](tr/README.md)
+
+![Bash](https://img.shields.io/badge/Bash-4+-blue)
+![Docker](https://img.shields.io/badge/Docker-20.10+-blue)
+![Telegram](https://img.shields.io/badge/Telegram-API-blue)
+
+## 📝 Описание
+
+Скрипт предназначен для установки и управления нодами Tempo (Moderato): RPC-нода и Validator-нода в Docker. Поддерживаются установка с нуля, загрузка и распаковка снапшота, даунгрейд версии, проверка синхронизации, просмотр логов и уведомления в Telegram о завершении длительных операций.
+
+## 🌟 Основные возможности
+
+- 🐳 Установка Tempo RPC Node и Validator Node (Docker)
+- 📦 Снапшот: выбор версии, загрузка, распаковка, перезапуск ноды
+- ⬇️ Даунгрейд версии ноды
+- 🔍 Проверка синхронизации и блоков (RPC)
+- 📋 Просмотр логов ноды
+- 🛑 Запуск и остановка контейнеров с отображением статуса (работает / остановлен)
+- 📨 Опциональные уведомления в Telegram о завершении снапшота и даунгрейда
+- 🌐 Языки: английский, русский, турецкий
+
+## 🛠️ Функционал
+
+| Функция | Описание |
+|--------|----------|
+| **RPC / Validator** | Установка в `$TEMPO_HOME/rpc` и `$TEMPO_HOME/validator` |
+| **Снапшот** | Список с API, выбор по номеру, ввод URL или локальный .tar.lz4 |
+| **Даунгрейд** | Выбор версии из списка или ввод тега, перезапуск ноды |
+| **Telegram** | TG_BOT_TOKEN и TG_CHAT_ID в .env — уведомления о завершении опций 3 и 4 |
+| **Языки** | EN / RU / TR в меню скрипта |
+
+## ⚙️ Установка и запуск
+
+1. **Требования:** Docker и Docker Compose. Скрипт проверит наличие и при необходимости подскажет установку.
+
+2. **Запуск** — однострочная команда (скачать с GitHub, назначить права, запустить):
+   ```bash
+   curl -o install-tempo.sh https://raw.githubusercontent.com/pittpv/tempo-node/main/install-tempo.sh && chmod +x install-tempo.sh && ./install-tempo.sh
+   ```
+   Для последующих запусков:
+   ```bash
+   cd $HOME && ./install-tempo.sh
+   ```
+
+3. **Конфигурация:** При установке ноды (опция 1 или 2) скрипт **создаёт** файл `.env-tempo` в `$TEMPO_HOME`. **После установки отредактируйте** этот файл при необходимости:
+   - `TEMPO_HOME` (по умолчанию `$HOME/tempo`), порты (RPC_HTTP_PORT, RPC_P2P_PORT и т.д.)
+   - для уведомлений о завершении снапшота и даунгрейда: **TG_BOT_TOKEN** и **TG_CHAT_ID**
+
+## ⚠️ Обязательная рекомендация: screen / tmux для снапшота и даунгрейда
+
+**Перед выполнением опции 3 (Снапшот) или опции 4 (Даунгрейд)** запускайте скрипт в сессии **screen** или **tmux**. Загрузка и распаковка снапшота занимают много времени; при обрыве SSH процесс прервётся. В остальных случаях использование screen/tmux не обязательно.
+
+Пример:
+```bash
+screen -S tempo
+./install-tempo.sh
+# выберите 3 или 4; после завершения получите уведомление в Telegram при настроенных TG_BOT_TOKEN и TG_CHAT_ID
+```
+
+или:
+```bash
+tmux new -s tempo
+./install-tempo.sh
+```
+
+## 🖥️ Главное меню
+
+1. Установить Tempo RPC Node (Docker)
+2. Установить Tempo Validator Node (Docker)
+3. Снапшот: загрузка / выбор версии и перезапуск ноды
+4. Понизить версию ноды
+5. Версия ноды
+6. Просмотр логов ноды
+7. Удалить ноду
+8. Проверить обновления (скрипта)
+9. Остановить контейнер
+10. Запустить контейнер
+11. Проверка синхронизации и блоков
+12. Проверить место на диске
+
+`0.` Выход
+
+## 📚 Пошаговая установка
+
+Подробное пошаговое описание установки RPC/Validator, снапшота и настройки Telegram:
+
+- [**Tempo-Install-by-Script.md**](other/Tempo-Install-by-Script.md) (рус.)
+- [English](en/Tempo-Install-by-Script.md) · [Türkçe](tr/Tempo-Install-by-Script.md)
+
+## ⚠️ Важно
+
+Скрипт не является официальным продуктом Tempo и предоставляется «как есть».
+
+## ✍️ Обратная связь
+
+Вопросы по работе скрипта, сообщения об ошибках или отзывы:
+
+https://t.me/+DLsyG6ol3SFjM2Vk
+
+## 📜 Лицензия
+
+MIT License
+
+## 🔗 Полезные ссылки
+
+- [Tempo Docs — RPC Node](https://docs.tempo.xyz/guide/node/rpc)
+- [Tempo Docs — Validator Node](https://docs.tempo.xyz/guide/node/validator)
+- [Snapshots](https://docs.tempo.xyz/guide/node/rpc#manually-downloading-snapshots)

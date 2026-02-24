@@ -1,0 +1,15 @@
+# IDE
+.idea/
+
+# Env / secrets (do not commit real config)
+.env
+.env-tempo
+.env.local
+*.env.local
+
+# Keys (node signing keys etc.)
+*.key
+
+# OS
+.DS_Store
+Thumbs.db
