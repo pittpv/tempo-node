@@ -2182,7 +2182,7 @@ check_for_updates() {
     
     # Get current installed version (any node: rpc or validator)
     local current_version=""
-    if select_node_for_operation 2>/dev/null && [[ -f "$NODE_DIR/docker-compose.yml" ]]; then
+    if select_node_for_operation && [[ -f "$NODE_DIR/docker-compose.yml" ]]; then
       local img=$(grep -E '^\s+image:' "$NODE_DIR/docker-compose.yml" | head -1 | sed 's/.*tempo:\(.*\)/\1/' | tr -d ' ')
       if [[ -n "$img" ]]; then
         current_version="$img"
