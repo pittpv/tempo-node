@@ -8,7 +8,7 @@
 #
 # NOTE: if you make modifications to this script, please increment the version number.
 # WARNING: the SemVer pattern: major.minor.patch must be followed as we use it to determine if the script is up to date.
-INSTALLER_VERSION="2.1.0"
+INSTALLER_VERSION="2.1.1"
 
 set -euo pipefail
 
@@ -2231,27 +2231,24 @@ main_menu() {
       1) install_tempo_rpc; command_executed=true ;;
       2) install_tempo_validator; command_executed=true ;;
       3) snapshot_menu; command_executed=true ;;
-      4) (downgrade_tempo && command_executed=true) || true ;;
+      4) (downgrade_tempo) || true; command_executed=true ;;
       5) show_version; command_executed=true ;;
-      6) (view_logs && command_executed=true) || true ;;
-      7) (remove_tempo && command_executed=true) || true ;;
+      6) (view_logs) || true; command_executed=true ;;
+      7) (remove_tempo) || true; command_executed=true ;;
       8) check_for_updates; command_executed=true ;;
-      9) (stop_container && command_executed=true) || true ;;
-      10) (start_container && command_executed=true) || true ;;
-      11) (check_sync_blocks && command_executed=true) || true ;;
-      12) (check_disk_usage && command_executed=true) || true ;;
+      9) (stop_container) || true; command_executed=true ;;
+      10) (start_container) || true; command_executed=true ;;
+      11) (check_sync_blocks) || true; command_executed=true ;;
+      12) (check_disk_usage) || true; command_executed=true ;;
       0) echo -e "\n${GREEN}$(t "goodbye")${NC}"; exit 0 ;;
       *) echo -e "\n${RED}$(t "invalid_choice")${NC}" ;;
     esac
     if [[ "$command_executed" == true ]]; then
-      # Не показывать "Press Enter" при возврате из подменю (3=snapshot, 12=check_sync)
-      if [[ "$choice" != "3" && "$choice" != "11" ]]; then
-        echo ""
-        echo -e "${YELLOW}Press Enter to continue...${NC}"
-        read -r
-        clear
-        show_logo
-      fi
+      echo ""
+      echo -e "${YELLOW}Press Enter to continue...${NC}"
+      read -r
+      clear
+      show_logo
     fi
   done
 }
