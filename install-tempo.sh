@@ -1005,7 +1005,7 @@ CONTAINER_NAME=tempo
 # TG_CHAT_ID=
 
 # --- Installer update (optional) ---
-# SCRIPT_URL=
+SCRIPT_URL=https://raw.githubusercontent.com/pittpv/tempo-node/refs/heads/main/install-tempo.sh
 ENVTEMPO
   fi
   if [[ ! -f "$env_tempo" ]]; then
