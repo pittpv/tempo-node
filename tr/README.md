@@ -8,6 +8,8 @@
 ![Docker](https://img.shields.io/badge/Docker-20.10+-blue)
 ![Telegram](https://img.shields.io/badge/Telegram-API-blue)
 
+![Tempo Node](../other/img/tr-img.png)
+
 ## Açıklama
 
 Bu script Tempo (moderato, mainnet) node'larını kurar ve yönetir: Docker'da RPC node ve Validator node. Sıfırdan kurulum, snapshot indirme ve açma, sürüm düşürme, senkronizasyon ve blok kontrolü, log görüntüleme ve uzun süren işlemler bittiğinde isteğe bağlı Telegram bildirimleri desteklenir.

@@ -8,6 +8,8 @@
 ![Docker](https://img.shields.io/badge/Docker-20.10+-blue)
 ![Telegram](https://img.shields.io/badge/Telegram-API-blue)
 
+![Tempo Node](other/img/en-img.png)
+
 ## Description
 
 This script installs and manages Tempo (moderato, mainnet) nodes: RPC node and Validator node in Docker. It supports fresh installs, snapshot download and extraction, version downgrade, sync and block checks, log viewing, and optional Telegram notifications when long-running tasks finish.

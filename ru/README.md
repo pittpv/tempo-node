@@ -8,6 +8,8 @@
 ![Docker](https://img.shields.io/badge/Docker-20.10+-blue)
 ![Telegram](https://img.shields.io/badge/Telegram-API-blue)
 
+![Tempo Node](../other/img/ru-img.png)
+
 ## 📝 Описание
 
 Скрипт предназначен для установки и управления нодами Tempo (moderato, mainnet): RPC-нода и Validator-нода в Docker. Поддерживаются установка с нуля, загрузка и распаковка снапшота, даунгрейд версии, проверка синхронизации, просмотр логов и уведомления в Telegram о завершении длительных операций.
