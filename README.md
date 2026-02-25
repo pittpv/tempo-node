@@ -86,7 +86,10 @@ tmux new -s tempo
 
 ## Step-by-step guide
 
-Detailed installation and Telegram setup: [**Tempo-Install-by-Script.md**](en/Tempo-Install-by-Script.md) (English). [Russian](ru/Tempo-Install-by-Script.md) · [Türkçe](tr/Tempo-Install-by-Script.md).
+Detailed installation and Telegram setup:
+
+- [**Tempo-Install-by-Script.md**](en/Tempo-Install-by-Script.md) (English).
+- [Russian](ru/Tempo-Install-by-Script.md) · [Türkçe](tr/Tempo-Install-by-Script.md).
 
 ## Disclaimer
 

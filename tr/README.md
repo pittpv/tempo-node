@@ -86,7 +86,10 @@ tmux new -s tempo
 
 ## Adım adım rehber
 
-Kurulum ve Telegram ayarları: [**Tempo-Install-by-Script.md**](Tempo-Install-by-Script.md) (Türkçe). [Русский](../ru/Tempo-Install-by-Script.md) · [English](../en/Tempo-Install-by-Script.md).
+Kurulum ve Telegram ayarları:
+
+- [**Tempo-Install-by-Script.md**](Tempo-Install-by-Script.md) (Türkçe).
+- [Русский](../ru/Tempo-Install-by-Script.md) · [English](../en/Tempo-Install-by-Script.md).
 
 ## Önemli
 
