@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #
 # Tempo Node Installer Moderato (Testnet)
-# Docker image ghcr.io/tempoxyz/tempo:1.3.1
+# Docker image ghcr.io/tempoxyz/tempo:1.4.0
 # RPC: https://docs.tempo.xyz/guide/node/rpc | Validator: https://docs.tempo.xyz/guide/node/validator
 # Snapshots: https://docs.tempo.xyz/guide/node/rpc#manually-downloading-snapshots
 # Guide: https://github.com/pittpv/tempo-node/blob/main/en/Tempo-Install-by-Script.md
 #
 # NOTE: if you make modifications to this script, please increment the version number.
 # WARNING: the SemVer pattern: major.minor.patch must be followed as we use it to determine if the script is up to date.
-INSTALLER_VERSION="2.1.1"
+INSTALLER_VERSION="2.2.0"
 
 set -euo pipefail
 
@@ -626,7 +626,7 @@ HTTP_PORT="${HTTP_PORT:-8545}"
 P2P_PORT="${P2P_PORT:-30303}"
 DISCOVERY_ADDR="${DISCOVERY_ADDR:-0.0.0.0}"
 DISCOVERY_PORT="${DISCOVERY_PORT:-30303}"
-TEMPO_IMAGE="${TEMPO_IMAGE:-ghcr.io/tempoxyz/tempo:1.1.4}"
+TEMPO_IMAGE="${TEMPO_IMAGE:-ghcr.io/tempoxyz/tempo:1.4.0}"
 CONTAINER_NAME="${CONTAINER_NAME:-tempo}"
 SNAPSHOTS_API="${SNAPSHOTS_API:-https://snapshots.tempoxyz.dev/api/snapshots}"
 REPO="tempoxyz/tempo"
@@ -661,7 +661,7 @@ HTTP_PORT="${HTTP_PORT:-8545}"
 P2P_PORT="${P2P_PORT:-30303}"
 DISCOVERY_ADDR="${DISCOVERY_ADDR:-0.0.0.0}"
 DISCOVERY_PORT="${DISCOVERY_PORT:-30303}"
-TEMPO_IMAGE="${TEMPO_IMAGE:-ghcr.io/tempoxyz/tempo:1.1.4}"
+TEMPO_IMAGE="${TEMPO_IMAGE:-ghcr.io/tempoxyz/tempo:1.4.0}"
 CONTAINER_NAME="${CONTAINER_NAME:-tempo}"
 SNAPSHOTS_API="${SNAPSHOTS_API:-https://snapshots.tempoxyz.dev/api/snapshots}"
 SCRIPT_URL="${SCRIPT_URL:-}"
@@ -993,7 +993,7 @@ VALIDATOR_METRICS_PORT=9000
 
 # --- Docker ---
 # Default image tag
-TEMPO_IMAGE=ghcr.io/tempoxyz/tempo:1.1.4
+TEMPO_IMAGE=ghcr.io/tempoxyz/tempo:1.4.0
 CONTAINER_NAME=tempo
 
 # --- Snapshots API ---
@@ -1447,7 +1447,7 @@ select_node_for_operation() {
 # Resolve image to use (latest or TEMPO_IMAGE). Prints only the image name to stdout.
 resolve_tempo_image() {
   local image_to_use="$TEMPO_IMAGE"
-  if [[ "$TEMPO_IMAGE" == "ghcr.io/tempoxyz/tempo:1.1.4" ]]; then
+  if [[ "$TEMPO_IMAGE" == "ghcr.io/tempoxyz/tempo:1.4.0" ]]; then
     info "Checking for latest Tempo version..." >&2
     local latest_version=$(get_latest_tempo_version 2>/dev/null)
     if [[ -n "$latest_version" && "$latest_version" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -1681,70 +1681,38 @@ downgrade_tempo() {
   fi
 
   echo -e "${YELLOW}$(t "downgrade_fetching")${NC}"
-  # Known tags for Moderato (GHCR); user can extend
-  TAGS="1.1.4 1.1.0 1.0.0"
-  echo "  0) $(t "downgrade_show_all")"
-  i=1
-  for tag in $TAGS; do
-    echo "  $i) $tag"
-    i=$((i+1))
-  done
-  echo "  $i) Enter custom tag"
-  read -e -p "$(t "downgrade_available") " num
+  all_tags=$(fetch_all_semver_tags) || true
+  all_tags=$(echo "$all_tags" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | uniq)
 
   TAG=""
-  if [[ "$num" == "0" ]]; then
-    # Must not let fetch return code trigger set -e exit
-    all_tags=$(fetch_all_semver_tags) || true
-    all_tags=$(echo "$all_tags" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | uniq)
-    if [[ -z "$all_tags" ]]; then
-      echo -e "${YELLOW}$(t "downgrade_fetch_error")${NC}"
-      echo ""
-      j=1
-      for tag in $TAGS; do
-        echo "  $j) $tag"
-        j=$((j+1))
-      done
-      echo "  $j) Enter custom tag"
-      read -e -p "$(t "downgrade_available") " num
-      k=1
-      for tag in $TAGS; do
-        if [[ "$num" == "$k" ]]; then TAG="$tag"; break; fi
-        k=$((k+1))
-      done
-      if [[ "$num" == "$j" ]]; then
-        read -e -p "Tag (e.g. 1.1.0): " TAG
+  if [[ -n "$all_tags" ]]; then
+    echo -e "\n${CYAN}$(t "downgrade_available")${NC}"
+    n=1
+    while IFS= read -r ver; do
+      [[ -z "$ver" ]] && continue
+      echo "  $n) $ver"
+      n=$((n + 1))
+    done <<< "$all_tags"
+    echo "  0) Enter custom tag"
+    choice=""
+    while true; do
+      read -e -p "#? " choice
+      [[ -z "$choice" ]] && continue
+      if [[ "$choice" == "0" ]]; then
+        read -e -p "Tag (e.g. 1.4.0): " TAG
+        break
       fi
-    else
-      # Numbered list + read (works without TTY / select)
-      echo -e "\n${CYAN}$(t "downgrade_available")${NC}"
       n=1
       while IFS= read -r ver; do
         [[ -z "$ver" ]] && continue
-        echo "  $n) $ver"
+        if [[ "$choice" == "$n" ]]; then TAG="$ver"; break 2; fi
         n=$((n + 1))
       done <<< "$all_tags"
-      choice=""
-      while true; do
-        read -e -p "#? " choice
-        n=1
-        while IFS= read -r ver; do
-          [[ -z "$ver" ]] && continue
-          if [[ "$choice" == "$n" ]]; then TAG="$ver"; break 2; fi
-          n=$((n + 1))
-        done <<< "$all_tags"
-        echo -e "${RED}$(t "downgrade_invalid_choice")${NC}"
-      done
-    fi
-  else
-    k=1
-    for tag in $TAGS; do
-      if [[ "$num" == "$k" ]]; then TAG="$tag"; break; fi
-      k=$((k+1))
+      echo -e "${RED}$(t "downgrade_invalid_choice")${NC}"
     done
-    if [[ "$num" == "$i" ]]; then
-      read -e -p "Tag (e.g. 1.1.0): " TAG
-    fi
+  else
+    echo -e "${YELLOW}$(t "downgrade_fetch_error")${NC}"
+    read -e -p "Tag (e.g. 1.4.0): " TAG
   fi
 
   if [[ -z "$TAG" ]]; then
@@ -1843,7 +1811,7 @@ snapshot_menu() {
   local data_dir="${DATADIR:-$NODE_DIR/data}"
   local img
   img=$(grep -E '^\s+image:' "$NODE_DIR/docker-compose.yml" | head -1 | sed 's/.*image:[[:space:]]*//' | tr -d ' ')
-  [[ -z "$img" ]] && img="${TEMPO_IMAGE:-ghcr.io/tempoxyz/tempo:1.1.4}"
+  [[ -z "$img" ]] && img="${TEMPO_IMAGE:-ghcr.io/tempoxyz/tempo:1.4.0}"
   local chain_id
   chain_id=$(chain_to_chain_id "$CHAIN")
   if [[ -z "$chain_id" ]]; then

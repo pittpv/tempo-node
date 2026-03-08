@@ -91,6 +91,25 @@ Detailed installation and Telegram setup:
 - [**Tempo-Install-by-Script.md**](en/Tempo-Install-by-Script.md) (English).
 - [Russian](ru/Tempo-Install-by-Script.md) · [Türkçe](tr/Tempo-Install-by-Script.md).
 
+## Changelog
+
+<details>
+<summary>Updates (click to expand)</summary>
+
+### 2026-03-08 — Installer 2.2.0
+- Default node image updated to **Tempo 1.4.0** (T1C network upgrade support: [release v1.4.0](https://github.com/tempoxyz/tempo/releases/tag/v1.4.0)).
+- **Downgrade node version** menu now shows **actually available versions** from Docker Hub instead of a fixed list.
+- Added **Enter custom tag** option to type an arbitrary tag when choosing a version.
+
+❗️This release is required for the T1C network upgrade with the following activation times:
+
+- Moderato: Monday, March 9th at 16:00 CET (unix timestamp: 1773068400)
+- Mainnet: Thursday, March 12th at 16:00 CET (unix timestamp: 1773327600)
+
+Node operators must update before activation, otherwise nodes will fall out of sync with the network.
+
+</details>
+
 ## Disclaimer
 
 This script is not an official Tempo product and is provided as is.

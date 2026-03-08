@@ -91,6 +91,25 @@ Kurulum ve Telegram ayarları:
 - [**Tempo-Install-by-Script.md**](Tempo-Install-by-Script.md) (Türkçe).
 - [Русский](../ru/Tempo-Install-by-Script.md) · [English](../en/Tempo-Install-by-Script.md).
 
+## Değişiklik geçmişi
+
+<details>
+<summary>Güncellemeler (görmek için tıklayın)</summary>
+
+### 2026-03-08 — Installer 2.2.0
+- Varsayılan node imajı **Tempo 1.4.0** olarak güncellendi (T1C ağ yükseltmesi desteği: [v1.4.0 sürümü](https://github.com/tempoxyz/tempo/releases/tag/v1.4.0)).
+- «Node sürümü düşür» menüsünde Docker Hub'dan **gerçek mevcut sürümler** gösteriliyor; önceden sabit liste yok.
+- Sürüm seçerken isteğe bağlı etiket girmek için «Enter custom tag» seçeneği eklendi.
+
+❗️Bu sürüm, aşağıdaki etkinleştirme zamanlarıyla T1C ağ yükseltmesi için gereklidir:
+
+- Moderato: 9 Mart Pazartesi, 16:00 CET (Unix zaman damgası: 1773068400)
+- Mainnet: 12 Mart Perşembe, 16:00 CET (Unix zaman damgası: 1773327600)
+
+Düğüm operatörleri etkinleştirmeden önce güncelleme yapmalıdır, aksi takdirde düğümler ağ ile senkronizasyon dışı kalacaktır.
+
+</details>
+
 ## Önemli
 
 Bu script resmi bir Tempo ürünü değildir ve "olduğu gibi" sunulmaktadır.
