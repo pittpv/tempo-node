@@ -8,7 +8,7 @@
 #
 # NOTE: if you make modifications to this script, please increment the version number.
 # WARNING: the SemVer pattern: major.minor.patch must be followed as we use it to determine if the script is up to date.
-INSTALLER_VERSION="2.2.0"
+INSTALLER_VERSION="2.2.1"
 
 set -euo pipefail
 
@@ -90,6 +90,11 @@ init_languages() {
   TRANSLATIONS["en,downgrade_updating"]="Updating docker-compose..."
   TRANSLATIONS["en,downgrade_starting"]="Starting node"
   TRANSLATIONS["en,downgrade_success"]="Node downgraded to version"
+  TRANSLATIONS["en,downgrade_ask_snapshot"]="Download snapshot after image download? (y/n): "
+  TRANSLATIONS["en,downgrade_snapshot_versions"]="Available snapshot versions for chain %s:"
+  TRANSLATIONS["en,downgrade_snapshot_choice"]="Select snapshot (number, 0=latest, b=back): "
+  TRANSLATIONS["en,downgrade_snapshot_back"]="Back (don't download snapshot)"
+  TRANSLATIONS["en,downgrade_no_snapshot_restart"]="Restarting container with downloaded image (no snapshot)."
   TRANSLATIONS["en,version_title"]="Tempo node version"
   TRANSLATIONS["en,container_not_found"]="Tempo container not found."
   TRANSLATIONS["en,container_found"]="Container:"
@@ -258,6 +263,11 @@ init_languages() {
   TRANSLATIONS["ru,downgrade_updating"]="Обновление docker-compose..."
   TRANSLATIONS["ru,downgrade_starting"]="Запуск ноды"
   TRANSLATIONS["ru,downgrade_success"]="Нода понижена до версии"
+  TRANSLATIONS["ru,downgrade_ask_snapshot"]="Скачать снепшот после загрузки образа? (y/n): "
+  TRANSLATIONS["ru,downgrade_snapshot_versions"]="Доступные версии снепшота для сети %s:"
+  TRANSLATIONS["ru,downgrade_snapshot_choice"]="Выберите снепшот (номер, 0=последний, b=назад): "
+  TRANSLATIONS["ru,downgrade_snapshot_back"]="Назад (не скачивать снепшот)"
+  TRANSLATIONS["ru,downgrade_no_snapshot_restart"]="Перезапуск контейнера со скачанным образом (без снепшота)."
   TRANSLATIONS["ru,version_title"]="Версия ноды Tempo"
   TRANSLATIONS["ru,container_not_found"]="Контейнер Tempo не найден."
   TRANSLATIONS["ru,container_found"]="Контейнер:"
@@ -426,6 +436,11 @@ init_languages() {
   TRANSLATIONS["tr,downgrade_updating"]="docker-compose güncelleniyor..."
   TRANSLATIONS["tr,downgrade_starting"]="Node başlatılıyor"
   TRANSLATIONS["tr,downgrade_success"]="Node sürümü düşürüldü:"
+  TRANSLATIONS["tr,downgrade_ask_snapshot"]="İmaj indirildikten sonra snapshot indirilsin mi? (e/h): "
+  TRANSLATIONS["tr,downgrade_snapshot_versions"]="%s zinciri için mevcut snapshot sürümleri:"
+  TRANSLATIONS["tr,downgrade_snapshot_choice"]="Snapshot seçin (numara, 0=son, b=geri): "
+  TRANSLATIONS["tr,downgrade_snapshot_back"]="Geri (snapshot indirme)"
+  TRANSLATIONS["tr,downgrade_no_snapshot_restart"]="İndirilen imajla konteyner yeniden başlatılıyor (snapshot yok)."
   TRANSLATIONS["tr,version_title"]="Tempo node sürümü"
   TRANSLATIONS["tr,container_not_found"]="Tempo konteyneri bulunamadı."
   TRANSLATIONS["tr,container_found"]="Konteyner:"
@@ -1740,13 +1755,74 @@ downgrade_tempo() {
   fi
   downgrade_img="$DOCKER_HUB_IMAGE:$TAG"
   chain_id=$(chain_to_chain_id "$CHAIN")
-  snapshot_url=$(get_snapshot_url_from_api "ghcr.io/tempoxyz/tempo:$TAG" "$chain_id")
+
+  # Ask whether to download snapshot after image pull
+  download_snapshot=""
+  while true; do
+    read -e -p "$(t "downgrade_ask_snapshot")" download_snapshot
+    download_snapshot=$(echo "${download_snapshot:-}" | tr '[:upper:]' '[:lower:]')
+    [[ "$download_snapshot" == "y" || "$download_snapshot" == "n" || "$download_snapshot" == "д" || "$download_snapshot" == "н" || "$download_snapshot" == "e" || "$download_snapshot" == "h" ]] && break
+    echo -e "${YELLOW}$(t "downgrade_invalid_choice")${NC}"
+  done
 
   echo -e "${YELLOW}$(t "downgrade_stopping")${NC}"
   (cd "$NODE_DIR" && $(docker_compose_cmd) down) || true
-  printf "$(t "downgrade_downloading_snapshot")\n" "$CHAIN"
-  # API stores image as ghcr.io/tempoxyz/tempo:TAG — query by that so snapshot version matches node version
-  run_snapshot_download_with_retry "$downgrade_img" "$data_dir" "$snapshot_url" "$CHAIN"
+
+  snapshot_url=""
+  if [[ "$download_snapshot" == "y" || "$download_snapshot" == "д" || "$download_snapshot" == "e" ]]; then
+    # Show available snapshot versions and let user choose
+    local api_img="ghcr.io/tempoxyz/tempo:$TAG"
+    list=$(list_snapshots_from_api "$chain_id" "$api_img")
+    if [[ -z "$list" ]]; then
+      list=$(list_snapshots_from_api "$chain_id" "")
+    fi
+    printf "\n${CYAN}$(t "downgrade_snapshot_versions")\n${NC}" "$CHAIN"
+    idx=0
+    urls=()
+    dates=()
+    blocks=()
+    while IFS='|' read -r date block url image; do
+      [[ -z "$url" ]] && continue
+      idx=$((idx + 1))
+      urls+=("$url")
+      dates+=("$date")
+      blocks+=("$block")
+      echo "  $idx) $date  block $block  (image: ${image:-$api_img})"
+    done <<< "$list"
+
+    if [[ $idx -eq 0 ]]; then
+      snapshot_url=$(get_snapshot_url_from_api "$api_img" "$chain_id")
+      if [[ -z "$snapshot_url" ]]; then
+        echo -e "${YELLOW}$(t "downgrade_fetch_error")${NC}"
+        echo -e "${YELLOW}$(t "downgrade_no_snapshot_restart")${NC}"
+      fi
+    else
+      echo "  0) $(t "snapshot_latest")"
+      echo "  b) $(t "downgrade_snapshot_back")"
+      read -e -p "$(t "downgrade_snapshot_choice")" choice
+      choice=$(echo "${choice:-}" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
+      if [[ "$choice" == "b" ]]; then
+        snapshot_url=""
+        echo -e "${CYAN}$(t "downgrade_no_snapshot_restart")${NC}"
+      elif [[ "$choice" == "0" || -z "$choice" ]]; then
+        snapshot_url="${urls[0]}"
+        info "Using latest: ${dates[0]} block ${blocks[0]}"
+      elif [[ "$choice" =~ ^[0-9]+$ && "$choice" -ge 1 && "$choice" -le $idx ]]; then
+        snapshot_url="${urls[$((choice - 1))]}"
+      else
+        echo -e "${YELLOW}$(t "downgrade_invalid_choice")${NC}"
+        snapshot_url="${urls[0]}"
+        info "Using latest snapshot."
+      fi
+    fi
+
+    if [[ -n "$snapshot_url" ]]; then
+      printf "$(t "downgrade_downloading_snapshot")\n" "$CHAIN"
+      run_snapshot_download_with_retry "$downgrade_img" "$data_dir" "$snapshot_url" "$CHAIN"
+    fi
+  else
+    echo -e "${CYAN}$(t "downgrade_no_snapshot_restart")${NC}"
+  fi
 
   echo -e "${YELLOW}$(t "downgrade_updating")${NC}"
   sed -i.bak "s|image:.*tempo:[^[:space:]]*|image: $DOCKER_HUB_IMAGE:$TAG|" "$NODE_DIR/docker-compose.yml"
