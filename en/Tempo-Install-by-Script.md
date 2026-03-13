@@ -157,7 +157,9 @@ After installation, RPC is available at e.g. `http://0.0.0.0:8545` (or the ports
 2. In the main menu choose **4** (Downgrade).
 3. Select the node (RPC or Validator).
 4. Pick a version from the list or enter a custom tag (e.g. `1.1.0`).
-5. The script stops the container, updates the image if needed, and restarts. With Telegram configured you get a completion notification.
+5. After the image is pulled, the script asks whether to download a **chain snapshot** for the selected version. If you answer **yes**, it shows available snapshots for that chain and lets you pick one (or use the latest). If you answer **no**, the node will be restarted with the new image only, keeping the existing chain data.
+6. In the snapshot selection menu there is also a **b (back)** option that lets you return from snapshot selection and restart the node with the downloaded image only (skip snapshot download).
+7. With Telegram configured you get a completion notification when downgrade (and snapshot, if used) is finished.
 
 ---
 

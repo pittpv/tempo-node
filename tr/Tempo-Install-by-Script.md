@@ -157,7 +157,9 @@ Kurulumdan sonra RPC örneğin `http://0.0.0.0:8545` (veya .env-tempo’daki por
 2. Ana menüde **4** (Downgrade) seçin.
 3. RPC veya Validator seçin.
 4. Listeden sürüm seçin veya özel etiket girin (örn. `1.1.0`).
-5. Script konteyneri durdurur, gerekirse imajı günceller ve yeniden başlatır. Telegram ayarlıysa tamamlanma bildirimi gelir.
+5. İmaj çekildikten sonra script, seçilen sürüm için **zincir snapshot’ı indirilsin mi** diye sorar. **Evet** derseniz ilgili zincir için mevcut snapshot sürümleri listelenir ve birini seçebilirsiniz (veya en son olanı kullanabilirsiniz). **Hayır** derseniz node yalnızca yeni imajla, mevcut zincir verisi korunarak yeniden başlatılır.
+6. Snapshot sürüm menüsünde ayrıca **b (geri)** seçeneği vardır — snapshot seçiminden geri dönüp yalnızca indirilen imajla node’u yeniden başlatmanıza (snapshot indirmeyi atlamanıza) izin verir.
+7. Telegram yapılandırılmışsa downgrade (ve varsa snapshot) tamamlandığında bildirim alırsınız.
 
 ---
 
