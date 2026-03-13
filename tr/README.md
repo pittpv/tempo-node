@@ -99,6 +99,7 @@ Kurulum ve Telegram ayarları:
 ### 2026-03-13 — Installer 2.2.1
 - **Downgrade (seçenek 4):** Node imajı indirildikten sonra script artık snapshot indirilip indirilmeyeceğini soruyor. Evet derseniz seçilen zincir için mevcut snapshot sürümleri listelenir ve birini seçebilirsiniz (veya 0 = en son). Hayır derseniz konteyner yalnızca yeni imajla yeniden başlatılır, mevcut zincir verisi korunur.
 - Downgrade sırasındaki snapshot sürüm menüsüne **b** (geri) seçeneği eklendi — snapshot indirmeyi atlayıp yalnızca indirilen imajla node yeniden başlatılır.
+- **Telegram bildirimleri:** tamamlanma mesajları geliştirildi — **sunucu IP’si**, **bitiş zamanı** ve daha iyi biçimlendirme (emoji + HTML) eklendi.
 
 ### 2026-03-08 — Installer 2.2.0
 - Varsayılan node imajı **Tempo 1.4.0** olarak güncellendi (T1C ağ yükseltmesi desteği: [v1.4.0 sürümü](https://github.com/tempoxyz/tempo/releases/tag/v1.4.0)).

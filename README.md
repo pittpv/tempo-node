@@ -99,6 +99,7 @@ Detailed installation and Telegram setup:
 ### 2026-03-13 — Installer 2.2.1
 - **Downgrade (option 4):** After downloading the node image, the script now asks whether to download a snapshot. If you choose yes, it shows available snapshot versions for the selected chain and lets you pick one (or 0 for latest). If you choose no, the container is restarted with the new image only, keeping existing chain data.
 - In the snapshot version menu during downgrade, added option **b** (back) to skip snapshot download and restart with the downloaded image only.
+- **Telegram notifications:** improved completion messages with **server IP**, **finish time**, and nicer formatting (emoji + HTML).
 
 ### 2026-03-08 — Installer 2.2.0
 - Default node image updated to **Tempo 1.4.0** (T1C network upgrade support: [release v1.4.0](https://github.com/tempoxyz/tempo/releases/tag/v1.4.0)).

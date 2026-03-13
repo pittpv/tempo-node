@@ -948,13 +948,64 @@ get_latest_tempo_version() {
 
 need_cmd() { command -v "$1" >/dev/null 2>&1; }
 
+# Escape text for Telegram HTML parse_mode
+tg_escape_html() {
+  local s="${1:-}"
+  s="${s//&/&amp;}"
+  s="${s//</&lt;}"
+  s="${s//>/&gt;}"
+  echo "$s"
+}
+
+# Best-effort server IP (public first, then local)
+get_server_ip() {
+  local ip=""
+
+  # Public IP (fast, optional)
+  if need_cmd curl; then
+    ip="$(curl -sSL --connect-timeout 2 --max-time 4 "https://api.ipify.org" 2>/dev/null || true)"
+    ip="$(echo "${ip:-}" | tr -d '[:space:]')"
+  fi
+
+  if [[ -n "${ip:-}" && ! "$ip" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ && ! "$ip" =~ ^[0-9a-fA-F:]+$ ]]; then
+    ip=""
+  fi
+
+  # Local IP fallback
+  if [[ -z "${ip:-}" ]] && need_cmd hostname; then
+    local ips=""
+    ips="$(hostname -I 2>/dev/null || true)"
+    ips="$(echo "${ips:-}" | tr -s ' ' | sed 's/^ *//;s/ *$//')"
+    ip="${ips%% *}"
+  fi
+
+  if [[ -z "${ip:-}" ]] && need_cmd ip; then
+    ip="$(ip -4 addr show scope global 2>/dev/null | grep -oE 'inet [0-9.]+' | head -n 1 | awk '{print $2}' || true)"
+  fi
+
+  if [[ -z "${ip:-}" ]]; then
+    echo "unknown"
+  else
+    echo "$ip"
+  fi
+}
+
 # Send Telegram notification if TG_BOT_TOKEN and TG_CHAT_ID are set (e.g. from .env-tempo)
 send_telegram() {
-  local msg="$1"
+  local body="${1:-}"
   [[ -z "${TG_BOT_TOKEN:-}" || -z "${TG_CHAT_ID:-}" ]] && return 0
   if need_cmd curl; then
+    local finished_at=""
+    local server_ip=""
+    local msg=""
+    finished_at="$(date '+%Y-%m-%d %H:%M:%S %Z' 2>/dev/null || date 2>/dev/null || echo "unknown")"
+    server_ip="$(get_server_ip)"
+    msg="$(printf "✅ <b>%s</b>\n\n<b>🌐 Server:</b> %s\n<b>🕒 Finished:</b> %s" \
+      "$(tg_escape_html "$body")" \
+      "$(tg_escape_html "$server_ip")" \
+      "$(tg_escape_html "$finished_at")")"
     curl -s -X POST "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
-      --data-urlencode "text=$msg" -d "chat_id=${TG_CHAT_ID}" -d "disable_web_page_preview=true" \
+      --data-urlencode "text=$msg" -d "chat_id=${TG_CHAT_ID}" -d "parse_mode=HTML" -d "disable_web_page_preview=true" \
       --connect-timeout 5 --max-time 10 >/dev/null 2>&1 || true
   fi
 }
@@ -1829,7 +1880,7 @@ downgrade_tempo() {
   echo -e "${YELLOW}$(t "downgrade_starting") $TAG...${NC}"
   (cd "$NODE_DIR" && $(docker_compose_cmd) up -d)
   echo -e "${GREEN}$(t "downgrade_success") $TAG${NC}"
-  send_telegram "Tempo downgrade: done. Node ${TAG} started. Chain: ${CHAIN}"
+  send_telegram "Tempo downgrade completed — node ${TAG} started (chain: ${CHAIN})"
 }
 
 show_version() {
@@ -1961,7 +2012,7 @@ snapshot_menu() {
     echo -e "${YELLOW}$(t "snapshot_restarting")${NC}"
     (cd "$NODE_DIR" && $(docker_compose_cmd) up -d)
     info "$(t "install_done")"
-    send_telegram "Tempo snapshot: done. Node restarted. Chain: ${CHAIN}"
+    send_telegram "Tempo snapshot completed — node restarted (chain: ${CHAIN})"
     return 0
   elif [[ "$choice" == "u" ]]; then
     read -e -p "URL: " snapshot_url
@@ -2000,7 +2051,7 @@ snapshot_menu() {
   echo -e "${YELLOW}$(t "snapshot_restarting")${NC}"
   (cd "$NODE_DIR" && $(docker_compose_cmd) up -d)
   info "$(t "install_done")"
-  send_telegram "Tempo snapshot: done. Node restarted. Chain: ${CHAIN}"
+  send_telegram "Tempo snapshot completed — node restarted (chain: ${CHAIN})"
 }
 
 check_disk_usage() {
